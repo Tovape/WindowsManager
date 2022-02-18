@@ -1,0 +1,6 @@
+#define ICON_1 42
+#ifdef RC_INVOKED
+
+ICON_1 ICON "c.ico"
+
+#endif

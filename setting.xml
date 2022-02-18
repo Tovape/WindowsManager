@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+Toni Valverde
+github.com/Tovape
+C++ Program
+Ver 1.0
+
+-->
+
+<settings>
+	<!-- (0 - OFF / 1 - ON) -->
+	<debugging>1</debugging>
+	
+</settings>
