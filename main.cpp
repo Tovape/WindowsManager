@@ -6,12 +6,14 @@
 #include <ws2tcpip.h> // Port Routing | https://docs.microsoft.com/en-us/windows/win32/api/winsock2/
 #include <dlfcn.h> // Library Checking | https://linux.die.net/man/3/dlopen
 #include "pugixml.hpp" // XML Parser | https://pugixml.org/
-#include "resource.rc"
+#include "resource.rc" // Icon
 
 // Including Files
 
 #include "header.h"
-#include "macros.cpp"
+#include "functions.cpp"
+
+// Preparations
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -19,7 +21,7 @@ using namespace std;
 
 int main(int argc , char *argv[]) {
 
-  //Color Win32 API
+  // Color Win32 API
 
   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
   CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
@@ -33,19 +35,13 @@ int main(int argc , char *argv[]) {
 
   int i, debugging = 0;
 
-  // Dlfcn
-
-  void *handle;
-  double (*cosine)(double);
-  char *error;
-
   // Presentation
 
   cout << "Copyright Tovape | tovape.github.io\n\n";
 
   // Checking Libs
 
-  cout << libcount() << " Libraries Loaded.\n";
+  cout << libcheck() << " Libraries Loaded.\n\n";
 
   sleep(1);
 

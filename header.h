@@ -3,6 +3,6 @@
 
 using namespace std;
 
-int libcount(int a);
+int libcheck(int a);
 
 #endif
