@@ -15,8 +15,9 @@
 
 // Preparations
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #pragma comment(lib, "ws2_32.lib")
-
 using namespace std;
 
 int main(int argc , char *argv[]) {
@@ -34,6 +35,8 @@ int main(int argc , char *argv[]) {
   int option, portoption, settingoption, settingoption1;
 
   int i, debugging = 0;
+
+  int startport, endport;
 
   // Presentation
 
@@ -59,15 +62,11 @@ int main(int argc , char *argv[]) {
     return 1;
   }
 
-  sleep(1);
-
   cout << "[";
   SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
   cout << "OK";
   SetConsoleTextAttribute(hConsole, saved_attributes);
   cout << "] WinSock Started\n";
-
-  sleep(1);
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0 )) == INVALID_SOCKET) {
     cout << "[";
@@ -120,7 +119,64 @@ int main(int argc , char *argv[]) {
 
   if (option == 1) {
     system("cls");
+    ports:
+
     cout << "\tPort Inspection\n\n";
+
+    cout << "(1) Scan\n";
+    cout << "(2) Other\n";
+    cout << "(3) Other\n";
+    cout << "(4) Other\n";
+    cout << "(5) Other\n";
+
+    cin >> portoption;
+
+    if (portoption <= 0 || portoption > 5) {
+      cout << "Invalid Choice\n";
+      sleep(3);
+      system("cls");
+      goto ports;
+    }
+
+    if (portoption == 1) {
+      system("cls");
+      cout << "Select the Range to Scan in Local Machine\n";
+      cout << "From: ";
+      cin >> startport;
+      cout << "\nTo: ";
+      cin >> endport;
+      cout << "\n";
+
+      int openedPorts = 0, closedPorts = 0;
+      struct sockaddr_in server;
+      server.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+      for (i = startport ; i <= endport ; i++) {
+
+        server.sin_family = AF_INET;
+      	server.sin_port = htons(i);
+
+      	if (connect(sock, (struct sockaddr *) &server, sizeof(server)) < 0) {
+      		cout << "Port " << i << " is Closed\n";
+          closedPorts++;
+
+      	} else {
+          cout << "Port " << i << " is Open\n";
+          openedPorts++;
+        }
+
+        fflush(stdout);
+      }
+
+      cout << "\n\tStats\n\n";
+      cout << closedPorts << " Ports are Closed.\t";
+      cout << openedPorts << " Ports are Open.\n";
+
+      sleep(10);
+      system("cls");
+      goto menu;
+    }
+
     system("cls");
     goto menu;
   }

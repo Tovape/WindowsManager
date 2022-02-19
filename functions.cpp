@@ -84,9 +84,9 @@ int libcheck() {
   #endif
 
   cout << "\nOperative: ";
-  SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN); cout << librariesOn; SetConsoleTextAttribute(hConsole, saved_attributes);
+  cout << librariesOn;
   cout << " | Inoperative: ";
-  SetConsoleTextAttribute(hConsole, FOREGROUND_RED); cout << librariesOff; SetConsoleTextAttribute(hConsole, saved_attributes);
+  cout << librariesOff;
   cout << "\n";
 
   librariesSize = librariesOn + librariesOff;
