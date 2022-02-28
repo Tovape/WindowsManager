@@ -2,6 +2,9 @@
 #include <Windows.h>
 #include <stdio.h>
 
+#define RAMDIV 1024 // Define Bytes to KB
+#define RAMWIDTH 8 // Define Field Width
+
 using namespace std;
 
 int libcheck() {
@@ -92,4 +95,69 @@ int libcheck() {
   librariesSize = librariesOn + librariesOff;
 
   return librariesSize;
+}
+
+void ramUsage() {
+
+  MEMORYSTATUSEX statex;
+  statex.dwLength = sizeof (statex);
+  GlobalMemoryStatusEx (&statex);
+
+  _tprintf (TEXT("%*ld %% In Use\n"),
+  RAMWIDTH, statex.dwMemoryLoad);
+
+  _tprintf (TEXT("%*I64d KB | %*I64d MB | %*I64d GB of Total Physical Memory\n"),
+  RAMWIDTH, statex.ullTotalPhys/RAMDIV,
+  RAMWIDTH, statex.ullTotalPhys/RAMDIV/RAMDIV,
+  4, statex.ullTotalPhys/RAMDIV/RAMDIV/RAMDIV);
+
+  _tprintf (TEXT("%*I64d KB | %*I64d MB | %*I64d GB of Free Physical Memory\n"),
+  RAMWIDTH, statex.ullAvailPhys/RAMDIV,
+  RAMWIDTH, statex.ullAvailPhys/RAMDIV/RAMDIV,
+  4, statex.ullAvailPhys/RAMDIV/RAMDIV/RAMDIV);
+
+  _tprintf (TEXT("%*I64d KB | %*I64d MB | %*I64d GB of Occupied Physical Memory\n"),
+  RAMWIDTH, statex.ullTotalPhys/RAMDIV - statex.ullAvailPhys/RAMDIV,
+  RAMWIDTH, statex.ullTotalPhys/RAMDIV/RAMDIV - statex.ullAvailPhys/RAMDIV/RAMDIV,
+  4, statex.ullTotalPhys/RAMDIV/RAMDIV/RAMDIV - statex.ullAvailPhys/RAMDIV/RAMDIV/RAMDIV);
+
+  cout << "\n";
+
+  _tprintf (TEXT("%*I64d Total KB of Paging File\n"),
+  RAMWIDTH, statex.ullTotalPageFile/RAMDIV);
+
+  _tprintf (TEXT("%*I64d Free KB of Paging File\n"),
+  RAMWIDTH, statex.ullAvailPageFile/RAMDIV);
+
+  _tprintf (TEXT("%*I64d Total KB of Virtual Memory\n"),
+  RAMWIDTH, statex.ullTotalVirtual/RAMDIV);
+
+  _tprintf (TEXT("%*I64d Free KB of Virtual Memory\n"),
+  RAMWIDTH, statex.ullAvailVirtual/RAMDIV);
+
+  _tprintf (TEXT("%*I64d Free KB of Extended Memory\n"),
+  RAMWIDTH, statex.ullAvailExtendedVirtual/RAMDIV);
+}
+
+void cpuUsage() {
+}
+
+void pcStats() {
+
+  SYSTEM_INFO siSysInfo;
+
+  // Copy the hardware information to the SYSTEM_INFO structure.
+
+  GetSystemInfo(&siSysInfo);
+
+  // Display the contents of the SYSTEM_INFO structure.
+
+  cout << "Hardware information: \n";
+  cout << "OEM ID: " << siSysInfo.dwOemId << "\n";
+  cout << "Number of processors: " << siSysInfo.dwNumberOfProcessors << "\n";
+  cout << "Page size: " << siSysInfo.dwPageSize << "\n";
+  cout << "Processor type: " << siSysInfo.dwProcessorType << "\n";
+  cout << "Minimum application address: " << siSysInfo.lpMinimumApplicationAddress << "\n";
+  cout << "Maximum application address: " << siSysInfo.lpMaximumApplicationAddress << "\n";
+  cout << "Active processor mask: " << siSysInfo.dwActiveProcessorMask << "\n";
 }

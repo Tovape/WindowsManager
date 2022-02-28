@@ -2,10 +2,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <Windows.h>
+#include <tchar.h>
 #include <winsock2.h> // Port Routing | https://docs.microsoft.com/en-us/windows/win32/api/winsock2/
 #include <ws2tcpip.h> // Port Routing | https://docs.microsoft.com/en-us/windows/win32/api/winsock2/
 #include <dlfcn.h> // Library Checking | https://linux.die.net/man/3/dlopen
-#include "pugixml.hpp" // XML Parser | https://pugixml.org/
 #include "resource.rc" // Icon
 
 // Including Files
@@ -17,6 +17,7 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#pragma comment(lib, "user32.lib")
 #pragma comment(lib, "ws2_32.lib")
 using namespace std;
 
@@ -68,6 +69,8 @@ int main(int argc , char *argv[]) {
   SetConsoleTextAttribute(hConsole, saved_attributes);
   cout << "] WinSock Started\n";
 
+  // Init Sockets
+
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0 )) == INVALID_SOCKET) {
     cout << "[";
     SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
@@ -105,12 +108,16 @@ int main(int argc , char *argv[]) {
   cout << "]\n\n";
 
   cout << "(1) Port Inspection\n";
-  cout << "(2) Settings\n";
-  cout << "(3) Exit\n";
+  cout << "(2) Ram Usage\n";
+  cout << "(3) Cpu Usage\n";
+  cout << "(4) Computer Stats\n";
+  cout << "(5) TCP Server\n";
+  cout << "(6) Settings\n";
+  cout << "(7) Exit\n";
 
   cin >> option;
 
-  if (option <= 0 || option > 3) {
+  if (option <= 0 || option > 7) {
     cout << "Invalid Choice\n";
     sleep(3);
     system("cls");
@@ -182,6 +189,76 @@ int main(int argc , char *argv[]) {
   }
 
   if (option == 2) {
+    ramUsage();
+    sleep(7);
+    system("cls");
+    goto menu;
+  }
+
+  if (option == 3) {
+    cpuUsage();
+    sleep(7);
+    system("cls");
+    goto menu;
+  }
+
+  if (option == 4) {
+    pcStats();
+    sleep(7);
+    system("cls");
+    goto menu;
+  }
+
+  if (option == 5) {
+    system("cls");
+    tcp:
+
+    cout << "\tTCP Server\n\n";
+
+    // Bind the ip address and port to a socket
+    sockaddr_in hint;
+    hint.sin_family = AF_INET;
+    hint.sin_port = htons(54000);
+    hint.sin_addr.S_un.S_addr = INADDR_ANY;
+
+    bind(sock, (sockaddr*) &hint, sizeof(hint));
+
+    // Tell Winsock the socket is for listening
+    listen(sock, SOMAXCONN);
+
+    // Wait for a Connection
+    sockaddr_in client;
+    int clientSize = sizeof(client);
+
+    SOCKET clientSocket = accept(sock, (sockaddr*) &client, &clientSize);
+
+    if (clientSocket == INVALID_SOCKET) {
+      cout << "[";
+      SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+      cout << "Error";
+      SetConsoleTextAttribute(hConsole, saved_attributes);
+      cout << "] Invalid Socket\n";
+    } else {
+      cout << "[";
+      SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+      cout << "Ok";
+      SetConsoleTextAttribute(hConsole, saved_attributes);
+      cout << "] Valid Socket\n";
+    }
+
+    char host[NI_MAXHOST];    // Client Remote Name
+    char service[NI_MAXHOST]; // Service the client is connected on
+
+    zeroMemory(host, NI_MAXHOST);
+    zeroMemory(service, NI_MAXHOST);
+    
+
+    sleep(3);
+    system("cls");
+    goto menu;
+  }
+
+  if (option == 6) {
     system("cls");
     settings:
 
@@ -218,7 +295,7 @@ int main(int argc , char *argv[]) {
     goto menu;
   }
 
-  if (option == 3) {
+  if (option == 7) {
     cout << "\tExit\n\n";
     sleep(3);
     return 0;
