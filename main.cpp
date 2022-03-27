@@ -166,7 +166,6 @@ int main(int argc , char *argv[]) {
       	if (connect(sock, (struct sockaddr *) &server, sizeof(server)) < 0) {
       		cout << "Port " << i << " is Closed\n";
           closedPorts++;
-
       	} else {
           cout << "Port " << i << " is Open\n";
           openedPorts++;
@@ -213,6 +212,8 @@ int main(int argc , char *argv[]) {
     system("cls");
     tcp:
 
+    /*
+
     cout << "\tTCP Server\n\n";
 
     // Bind the ip address and port to a socket
@@ -249,9 +250,65 @@ int main(int argc , char *argv[]) {
     char host[NI_MAXHOST];    // Client Remote Name
     char service[NI_MAXHOST]; // Service the client is connected on
 
-    zeroMemory(host, NI_MAXHOST);
-    zeroMemory(service, NI_MAXHOST);
-    
+    ZeroMemory(host, NI_MAXHOST);
+    ZeroMemory(service, NI_MAXHOST);
+
+    if (getnameinfo((sockaddr*) &client, sizeof(client), host, NI_MAXHOST, service, NI_MAXSERV, 0) == 0) {
+      cout << "[";
+      SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+      cout << "Ok";
+      SetConsoleTextAttribute(hConsole, saved_attributes);
+      cout << "] " << host << " connected on port " << service << "\n";
+    } else {
+      cout << "[";
+      SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+      cout << "Ok";
+      SetConsoleTextAttribute(hConsole, saved_attributes);
+      inet_ntoa(AF_INET, &client.sin_addr, host, NI_MAXHOST);
+      cout << "] " << host << " connected on port " << ntohs(client.sin_port) << "\n";
+    }
+
+    // Close Socket
+    closesocket(sock);
+
+    // While Loop, accept messages
+    char buf[4096];
+
+    while(true) {
+        ZeroMemory(buf, 4096);
+
+        // Wait for client to send data
+
+        int bytesReceived = recv(clientSocket, buf, 4096, 0);
+        if (bytesReceived == SOCKET_ERROR) {
+          cout << "[";
+          SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+          cout << "Error";
+          SetConsoleTextAttribute(hConsole, saved_attributes);
+          cout << "] in recv()";
+          break;
+        }
+
+        if (bytesReceived == 0) {
+          cout << "\nClient Disconnected\n";
+          break;
+        }
+
+        // Echo Message back to client
+
+        send(clientSocket, buf, bytesReceived + 1, 0);
+
+    }
+
+    // Close the socket
+
+    closesocket(clientSocket);
+
+    // Cleanup
+
+    WSACleanup();
+
+    */
 
     sleep(3);
     system("cls");
